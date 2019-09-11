@@ -1,6 +1,17 @@
-node() {
-    git url: "https://phx-it-github-prod-1.eng.nutanix.com/michael-haigh/dev-traditional-app/", credentialsId: 'd8500ae9-87ba-4fdc-bf16-2535b0a51011'
+node("docker") {
+    docker.withRegistry('', '93632a7f-bcab-4677-9e91-0aad2ebfb6ec') {
 
-    stage "Calm: Update App"
-    step([$class: 'RunApplicationAction', actionName: 'UpdateApp', applicationName: 'dev-traditional-app', runtimeVariables: '{}'])
+        git url: "https://phx-it-github-prod-1.eng.nutanix.com/michael-haigh/dev-docker-app/", credentialsId: 'd8500ae9-87ba-4fdc-bf16-2535b0a51011'
+        env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+
+        stage "Build"
+        def devdockerapp = docker.build "michaelatnutanix/hello-kubernetes"
+    
+        stage "Publish"
+        devdockerapp.push 'latest'
+        devdockerapp.push "${env.GIT_COMMIT}"
+
+        stage "Deploy"
+        kubernetesDeploy configs: 'dev-docker-dep.yaml', kubeConfig: [path: ''], kubeconfigId: '	45312c5c-24d1-4c15-aec3-da4e8637e925', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+    }
 }
