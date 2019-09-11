@@ -5,7 +5,7 @@ node("docker") {
         env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
         stage "Build"
-        def devdockerapp = docker.build "michaelatnutanix/hello-kubernetes"
+        def devdockerapp = docker.build "michaelatnutanix/dev-docker-app"
     
         stage "Publish"
         devdockerapp.push 'latest'
