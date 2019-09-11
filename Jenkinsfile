@@ -12,6 +12,6 @@ node("docker") {
         devdockerapp.push "${env.GIT_COMMIT}"
 
         stage "Deploy"
-        kubernetesDeploy configs: 'dev-docker-dep.yaml', kubeConfig: [path: ''], kubeconfigId: '	45312c5c-24d1-4c15-aec3-da4e8637e925', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+        kubernetesDeploy configs: 'dev-docker-dep.yaml', kubeConfig: [path: ''], kubeconfigId: '45312c5c-24d1-4c15-aec3-da4e8637e925', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
     }
 }
