@@ -1,7 +1,7 @@
 node("docker") {
     docker.withRegistry('', 'bef9483a-47b8-4096-9bce-bc0cdd198b9a') {
 
-        git url: "https://phx-it-github-prod-1.eng.nutanix.com/michael-haigh/dev-docker-app/", credentialsId: 'd8500ae9-87ba-4fdc-bf16-2535b0a51011'
+        git url: "https://github.com/MichaelHaigh/dev-docker-app/", credentialsId: 'aea9e704-c6d6-4aae-91be-7243a5e7e850'
         env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
         stage "Build"
