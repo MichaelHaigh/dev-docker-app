@@ -1,6 +1,7 @@
 from flask import Flask
-#from models import db
 from flask import render_template
+import os
+import subprocess
 
 app = Flask(__name__)
 
@@ -13,13 +14,37 @@ POSTGRES = {
 }
 
 app.config['DEBUG'] = True
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
-#db.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+
+def is_docker():
+    path = '/proc/self/cgroup'
+    return (
+        os.path.exists('/.dockerenv') or
+        os.path.isfile(path) and any('docker' in line for line in open(path))
+    )
+
+def is_aws():
+    command = ["sudo", "dmidecode"]
+    return (any('Xen' in line for line in subprocess.check_output(command).split('\n')))
 
 @app.route("/")
 def main():
-    message = "Hello Mark!"
-    return render_template('index.html', message=message)
+    message = "Hello DockerWorld!"
+
+    if is_docker():
+        runningon = "karbon.png"
+        builtby   = "jenkins.png"
+
+    elif is_aws():
+        runningon = "amazon.png"
+        builtby   = "calm.png"
+
+    else:
+        runningon = "ahv.png"
+        builtby   = "calm.png"
+
+    return render_template('index.html', message=message,
+                           runningon=runningon, builtby=builtby)
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0')
